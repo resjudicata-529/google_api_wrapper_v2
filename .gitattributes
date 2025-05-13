@@ -1,0 +1,39 @@
+# Auto detect text files and perform LF normalization
+* text=auto
+
+# TypeScript and JavaScript files
+*.ts text
+*.js text
+*.json text
+
+# Shell scripts
+*.sh text eol=lf
+*.bash text eol=lf
+
+# Batch files
+*.bat text eol=crlf
+*.cmd text eol=crlf
+
+# Documentation
+*.md text
+*.txt text
+LICENSE text
+
+# Configuration files
+.env* text
+.gitignore text
+.gitattributes text
+tsconfig.json text
+package.json text
+package-lock.json text
+
+# HTML and CSS files
+*.html text
+*.css text
+
+# Don't modify binary files
+*.png binary
+*.jpg binary
+*.gif binary
+*.ico binary
+*.zip binary 
