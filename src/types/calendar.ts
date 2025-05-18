@@ -13,8 +13,22 @@ export const CreateEventSchema = z.object({
   userId: z.string(),
   summary: z.string(),
   description: z.string().optional(),
-  startDateTime: z.string().datetime(),
-  endDateTime: z.string().datetime(),
+  startDateTime: z.string().refine((val) => {
+    try {
+      const date = new Date(val);
+      return !isNaN(date.getTime());
+    } catch {
+      return false;
+    }
+  }, { message: 'Invalid date format' }),
+  endDateTime: z.string().refine((val) => {
+    try {
+      const date = new Date(val);
+      return !isNaN(date.getTime());
+    } catch {
+      return false;
+    }
+  }, { message: 'Invalid date format' }),
   attendees: z.array(z.string().email()).optional(),
   location: z.string().optional(),
 });

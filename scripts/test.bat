@@ -1,7 +1,7 @@
 @echo off
 
 :: Run tests with coverage
-call jest --coverage
+call npm run test:all
 
 :: Check test coverage thresholds
 if %ERRORLEVEL% EQU 0 (

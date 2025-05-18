@@ -5,10 +5,15 @@ module.exports = {
   moduleNameMapper: {
     '^@/(.*)$': '<rootDir>/src/$1',
   },
+  setupFiles: [
+    'dotenv/config',
+    '<rootDir>/src/__tests__/setup/jest.setup.ts'
+  ],
   collectCoverageFrom: [
     'src/**/*.{ts,tsx}',
     '!src/**/*.d.ts',
     '!src/index.ts',
+    '!src/__tests__/**',
   ],
   coverageThreshold: {
     global: {
@@ -19,7 +24,17 @@ module.exports = {
     },
   },
   testMatch: [
-    '<rootDir>/src/**/__tests__/**/*.{ts,tsx}',
+    '<rootDir>/src/**/__tests__/**/*.test.{ts,tsx}',
     '<rootDir>/src/**/*.{spec,test}.{ts,tsx}',
+    '!<rootDir>/src/__tests__/setup/**',
+    '!<rootDir>/src/__tests__/utils/**'
   ],
+  modulePathIgnorePatterns: ['<rootDir>/dist/'],
+  verbose: true,
+  moduleDirectories: ['node_modules', 'src'],
+  transform: {
+    '^.+\\.tsx?$': ['ts-jest', {
+      tsconfig: 'tsconfig.json'
+    }]
+  }
 }; 

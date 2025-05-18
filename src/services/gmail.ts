@@ -201,4 +201,35 @@ export async function sendMessage(
     logger.error('Error sending message:', error);
     throw new Error('Failed to send message');
   }
+}
+
+export async function getGmailClient(userId: string) {
+  const token = await getToken(userId);
+  if (!token) {
+    throw new Error('No token found for user');
+  }
+
+  const oauth2Client = new google.auth.OAuth2();
+  oauth2Client.setCredentials(token);
+
+  return google.gmail({ version: 'v1', auth: oauth2Client });
+}
+
+// Helper function to handle null values
+function nullToUndefined<T>(value: T | null | undefined): T | undefined {
+  return value === null ? undefined : value;
+}
+
+// Helper function to convert Gmail message to our format
+export function convertGmailMessage(message: any) {
+  return {
+    id: message.id,
+    threadId: message.threadId,
+    labelIds: message.labelIds || [],
+    snippet: nullToUndefined(message.snippet),
+    payload: message.payload,
+    sizeEstimate: message.sizeEstimate,
+    historyId: message.historyId,
+    internalDate: message.internalDate,
+  };
 } 

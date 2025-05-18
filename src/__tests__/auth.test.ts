@@ -1,4 +1,22 @@
-import { TokenData, TokenSchema } from '@/types/auth';
+import { TokenData, TokenSchema, EncryptedToken } from '@/types/auth';
+import { jest } from '@jest/globals';
+
+// Mock the auth service
+jest.mock('@/services/auth', () => ({
+  encryptToken: jest.fn((token: unknown): EncryptedToken => ({
+    iv: 'mock-iv',
+    content: 'mock-encrypted-content'
+  })),
+  decryptToken: jest.fn((encrypted: unknown): TokenData => ({
+    access_token: 'test_access_token',
+    refresh_token: 'test_refresh_token',
+    scope: 'https://www.googleapis.com/auth/gmail.readonly',
+    token_type: 'Bearer',
+    expiry_date: 1747189870405,
+  }))
+}));
+
+// Import after mocking
 import { encryptToken, decryptToken } from '@/services/auth';
 
 describe('Auth Service', () => {
@@ -7,7 +25,7 @@ describe('Auth Service', () => {
     refresh_token: 'test_refresh_token',
     scope: 'https://www.googleapis.com/auth/gmail.readonly',
     token_type: 'Bearer',
-    expiry_date: Date.now() + 3600000, // 1 hour from now
+    expiry_date: 1747189870405,
   };
 
   beforeAll(() => {

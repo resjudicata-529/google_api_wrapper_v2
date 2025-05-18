@@ -2,11 +2,11 @@ import fastify, { FastifyInstance } from 'fastify';
 import cors from '@fastify/cors';
 import swagger from '@fastify/swagger';
 import swaggerUi from '@fastify/swagger-ui';
-import { authRoutes } from '@/routes/auth';
-import { gmailRoutes } from '@/routes/gmail';
-import { calendarRoutes } from '@/routes/calendar';
-import { staticPlugin } from '@/plugins/static';
-import { logger } from '@/utils/logger';
+import { authRoutes } from './routes/auth';
+import { gmailRoutes } from './routes/gmail';
+import { calendarRoutes } from './routes/calendar';
+import { staticPlugin } from './plugins/static';
+import { logger } from './utils/logger';
 
 export async function buildServer(): Promise<FastifyInstance> {
   const server = fastify({

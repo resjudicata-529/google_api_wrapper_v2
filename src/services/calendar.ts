@@ -9,19 +9,19 @@ function simplifyEvent(event: calendar_v3.Schema$Event): SimplifiedEvent {
   return {
     id: event.id!,
     summary: event.summary || '',
-    description: event.description,
+    description: nullToUndefined(event.description),
     start: event.start?.dateTime || event.start?.date || '',
     end: event.end?.dateTime || event.end?.date || '',
     organizer: {
       email: event.organizer?.email || '',
-      displayName: event.organizer?.displayName,
+      displayName: nullToUndefined(event.organizer?.displayName),
     },
     attendees: event.attendees?.map(attendee => ({
       email: attendee.email || '',
-      displayName: attendee.displayName,
-      responseStatus: attendee.responseStatus,
+      displayName: nullToUndefined(attendee.displayName),
+      responseStatus: nullToUndefined(attendee.responseStatus),
     })),
-    location: event.location,
+    location: nullToUndefined(event.location),
   };
 }
 
@@ -32,12 +32,12 @@ function getEventDetail(event: calendar_v3.Schema$Event): EventDetail {
     updated: event.updated || '',
     status: event.status || '',
     htmlLink: event.htmlLink || '',
-    colorId: event.colorId,
+    colorId: nullToUndefined(event.colorId),
     creator: {
       email: event.creator?.email || '',
-      displayName: event.creator?.displayName,
+      displayName: nullToUndefined(event.creator?.displayName),
     },
-    recurringEventId: event.recurringEventId,
+    recurringEventId: nullToUndefined(event.recurringEventId),
     originalStartTime: event.originalStartTime ? {
       dateTime: event.originalStartTime.dateTime || '',
       timeZone: event.originalStartTime.timeZone || '',
@@ -127,4 +127,40 @@ export async function createEvent(
     logger.error('Error creating event:', error);
     throw new Error('Failed to create event');
   }
+}
+
+export async function getCalendarClient(userId: string) {
+  const token = await getToken(userId);
+  if (!token) {
+    throw new Error('No token found for user');
+  }
+
+  const oauth2Client = new google.auth.OAuth2();
+  oauth2Client.setCredentials(token);
+
+  return google.calendar({ version: 'v3', auth: oauth2Client });
+}
+
+// Helper function to handle null values
+function nullToUndefined<T>(value: T | null | undefined): T | undefined {
+  return value === null ? undefined : value;
+}
+
+// Helper function to convert Google Calendar event to our format
+export function convertGoogleEvent(event: any) {
+  return {
+    id: event.id,
+    summary: event.summary,
+    description: nullToUndefined(event.description),
+    start: event.start,
+    end: event.end,
+    attendees: event.attendees?.map((attendee: any) => ({
+      email: attendee.email,
+      displayName: nullToUndefined(attendee.displayName),
+      responseStatus: nullToUndefined(attendee.responseStatus),
+    })),
+    location: nullToUndefined(event.location),
+    colorId: nullToUndefined(event.colorId),
+    recurringEventId: nullToUndefined(event.recurringEventId),
+  };
 } 
